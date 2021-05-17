@@ -1,0 +1,7 @@
+{
+  "cSpell.words": [],
+  "search.exclude": {
+    "**/dist/**/*": true
+  },
+  "editor.tabSize": 2
+}
