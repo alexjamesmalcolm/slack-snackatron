@@ -1,14 +1,19 @@
-import { installUrl, installer } from "./installer";
-import { createServer } from "http";
+import { App } from "@slack/bolt";
+const token = process.env.SLACK_TOKEN;
+const signingSecret = process.env.SLACK_SIGNING_SECRET;
+const app = new App({
+  token,
+  signingSecret,
+});
 
-export const runApp = () => {
-  const server = createServer((req, res) => {
-    // our redirect_uri is /slack/oauth_redirect
-    if (req.url === "/slack/oauth_redirect") {
-      // call installer.handleCallback to wrap up the install flow
-      installer.handleCallback(req, res);
-    }
-  });
+app.message("snackatron", async ({ message, say }) => {
+  console.log(JSON.stringify(message));
+  await say(`Hello there!`);
+});
 
-  server.listen(3000);
+const port = (process.env.PORT && Number.parseInt(process.env.PORT)) || 3000;
+
+export const runApp = async () => {
+  await app.start(port);
+  console.log("⚡️ Bolt app is running!");
 };
