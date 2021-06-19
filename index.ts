@@ -1,4 +1,4 @@
 require("dotenv").config();
-import { runApp } from "./express/app";
+import { runApp } from "./src/app";
 
 runApp();
