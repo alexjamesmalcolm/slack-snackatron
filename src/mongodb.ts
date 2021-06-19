@@ -10,7 +10,7 @@ export const connect = async (): Promise<[Db, () => void]> => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }).connect();
-    return [client.db("dishbot"), client.close];
+    return [client.db("snackatron"), client.close];
   } catch (error) {
     throw new Error(
       `There was an issue attempting to connect to ${uri}\n${error}`
