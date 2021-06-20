@@ -7,9 +7,9 @@ phases:
   build:
     commands:
       - npm test && npm run build
-  post_build:
-    commands:
-      - npm run test-network
+  # post_build:
+  #   commands:
+  #     - npm run test-network
 artifacts:
   files:
     - dist/**/*
