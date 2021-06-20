@@ -10,7 +10,7 @@
     "scripts": {
         "build": "tsc",
         "start": "node .",
-        "test": "jest",
+        "test": "jest --passWithNoTests",
         "test-network": "concurrently -s first -k 'npm:start' 'node network-test.js'",
         "dev": "ts-node-dev index.ts",
         "dev:debug": "ts-node-dev --inspect --respawn index.ts"
