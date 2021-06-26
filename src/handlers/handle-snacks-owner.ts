@@ -4,6 +4,9 @@ import { getNextDayOfWeek } from "../types/day-of-the-week";
 import { Group } from "../types/group";
 import { getGroupId } from "./get-group-id";
 
+/**
+ * @description If there is no Snackatron owner of this group then the caller of this command becomes that person. In the future can also be used to change ownership.
+ */
 export const handleSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
   async ({ ack, command, say, respond }) => {
     await ack();

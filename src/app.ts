@@ -1,6 +1,5 @@
 import { App, ExpressReceiver } from "@slack/bolt";
 import { handleSnacksOwner } from "./handlers/handle-snacks-owner";
-// import { handleSnacksSetDay } from "./handlers/handle-snacks-set-day";
 import { handleSnacksSkip } from "./handlers/handle-snacks-skip";
 import { handleSnacksWho } from "./handlers/handle-snacks-who";
 
@@ -40,9 +39,6 @@ app.command("/snacks-skip", handleSnacksSkip);
  * @description Returns the n number of people who are on snacks next.
  */
 app.command("/snacks-who", handleSnacksWho);
-/**
- * @description If there is no Snackatron owner of this group then the caller of this command becomes that person. In the future can also be used to change ownership.
- */
 app.command("/snacks-owner", handleSnacksOwner);
 
 receiver.router.get("/", (req, res) => {
