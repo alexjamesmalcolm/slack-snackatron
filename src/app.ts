@@ -16,9 +16,27 @@ const app = new App({
   receiver,
 });
 
-app.message("snackatron", async ({ message, say }) => {
+app.message("hello", async ({ message, say }) => {
   console.log(JSON.stringify(message));
   await say(`Hello there!`);
+});
+
+/*
+/snacks-skip - skips the current snack day
+/snacks-set-day - sets the day of the week that snack day is
+/snacks-who - gets the list of people that are currently on snacks
+*/
+app.command("/snacks-skip", async ({ ack, command, say }) => {
+  await ack();
+  await say(command.text);
+});
+app.command("/snacks-set-day", async ({ ack, command, say }) => {
+  await ack();
+  await say(command.text);
+});
+app.command("/snacks-who", async ({ ack, command, say }) => {
+  await ack();
+  await say(command.text);
 });
 
 receiver.router.get("/", (req, res) => {
