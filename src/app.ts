@@ -1,4 +1,9 @@
-import { App, ExpressReceiver } from "@slack/bolt";
+import {
+  App,
+  ExpressReceiver,
+  Middleware,
+  SlackCommandMiddlewareArgs,
+} from "@slack/bolt";
 
 const token = process.env.SLACK_TOKEN;
 const signingSecret = process.env.SLACK_SIGNING_SECRET;
@@ -26,42 +31,26 @@ app.message("hello", async ({ message, say }) => {
 /snacks-set-day - sets the day of the week that snack day is
 /snacks-who - gets the list of people that are currently on snacks
 */
-app.command("/snacks-skip", async ({ ack, command, say }) => {
+
+const respond: Middleware<SlackCommandMiddlewareArgs> = async ({
+  ack,
+  say,
+  command,
+}) => {
   try {
     await ack();
+    say(`Hello there.
+\`\`\`
+${JSON.stringify(command, null, 2)}
+\`\`\`
+`);
   } catch (error) {
     console.error(error);
   }
-  try {
-    await say(command.text);
-  } catch (error) {
-    console.error(error);
-  }
-});
-app.command("/snacks-set-day", async ({ ack, command, say }) => {
-  try {
-    await ack();
-  } catch (error) {
-    console.error(error);
-  }
-  try {
-    await say(command.text);
-  } catch (error) {
-    console.error(error);
-  }
-});
-app.command("/snacks-who", async ({ ack, command, say }) => {
-  try {
-    await ack();
-  } catch (error) {
-    console.error(error);
-  }
-  try {
-    await say(command.text);
-  } catch (error) {
-    console.error(error);
-  }
-});
+};
+app.command("/snacks-skip", respond);
+app.command("/snacks-set-day", respond);
+app.command("/snacks-who", respond);
 
 receiver.router.get("/", (req, res) => {
   res.send("Hello World!");
