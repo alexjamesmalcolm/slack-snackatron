@@ -7,6 +7,7 @@ export interface PersonInGroup {
 }
 
 export interface SnackRotation {
+  channelId: string;
   nextSnackDay: Temporal.PlainDate;
   dayOfTheWeek: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   peopleOnSnacks: string[];
@@ -14,7 +15,8 @@ export interface SnackRotation {
 }
 
 export interface Group {
-  channelId: string;
+  groupId: string;
+  ownerUsername: string;
   snackRotations: SnackRotation[];
 }
 

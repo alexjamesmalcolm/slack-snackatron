@@ -1,9 +1,8 @@
-import {
-  App,
-  ExpressReceiver,
-  Middleware,
-  SlackCommandMiddlewareArgs,
-} from "@slack/bolt";
+import { App, ExpressReceiver } from "@slack/bolt";
+import { handleSnacksOwner } from "./handlers/handle-snacks-owner";
+// import { handleSnacksSetDay } from "./handlers/handle-snacks-set-day";
+import { handleSnacksSkip } from "./handlers/handle-snacks-skip";
+import { handleSnacksWho } from "./handlers/handle-snacks-who";
 
 const token = process.env.SLACK_TOKEN;
 const signingSecret = process.env.SLACK_SIGNING_SECRET;
@@ -32,25 +31,19 @@ app.message("hello", async ({ message, say }) => {
 /snacks-who - gets the list of people that are currently on snacks
 */
 
-const respond: Middleware<SlackCommandMiddlewareArgs> = async ({
-  ack,
-  say,
-  command,
-}) => {
-  try {
-    await ack();
-    say(`Hello there.
-\`\`\`
-${JSON.stringify(command, null, 2)}
-\`\`\`
-`);
-  } catch (error) {
-    console.error(error);
-  }
-};
-app.command("/snacks-skip", respond);
-app.command("/snacks-set-day", respond);
-app.command("/snacks-who", respond);
+app.command("/snacks-skip", handleSnacksSkip);
+// app.command("/snacks-day", handleSnacksDay);
+// app.command("/snacks-people-per-day", handleSnacksPeoplePerDay);
+// app.command("/snacks-join", handleSnacksJoin);
+// app.command("/snacks-leave", handleSnacksLeave);
+/**
+ * @description Returns the n number of people who are on snacks next.
+ */
+app.command("/snacks-who", handleSnacksWho);
+/**
+ * @description If there is no Snackatron owner of this group then the caller of this command becomes that person. In the future can also be used to change ownership.
+ */
+app.command("/snacks-owner", handleSnacksOwner);
 
 receiver.router.get("/", (req, res) => {
   res.send("Hello World!");

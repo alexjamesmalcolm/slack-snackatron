@@ -1,6 +1,6 @@
 import { Db, MongoClient } from "mongodb";
 
-export const connect = async (): Promise<[Db, () => void]> => {
+export const connect = async (): Promise<[Db, MongoClient["close"]]> => {
   const uri = process.env.DATABASE_URL;
   if (!uri) {
     throw new Error("DATABASE_URL is not defined");
