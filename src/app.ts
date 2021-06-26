@@ -27,16 +27,40 @@ app.message("hello", async ({ message, say }) => {
 /snacks-who - gets the list of people that are currently on snacks
 */
 app.command("/snacks-skip", async ({ ack, command, say }) => {
-  await ack();
-  await say(command.text);
+  try {
+    await ack();
+  } catch (error) {
+    console.error(error);
+  }
+  try {
+    await say(command.text);
+  } catch (error) {
+    console.error(error);
+  }
 });
 app.command("/snacks-set-day", async ({ ack, command, say }) => {
-  await ack();
-  await say(command.text);
+  try {
+    await ack();
+  } catch (error) {
+    console.error(error);
+  }
+  try {
+    await say(command.text);
+  } catch (error) {
+    console.error(error);
+  }
 });
 app.command("/snacks-who", async ({ ack, command, say }) => {
-  await ack();
-  await say(command.text);
+  try {
+    await ack();
+  } catch (error) {
+    console.error(error);
+  }
+  try {
+    await say(command.text);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 receiver.router.get("/", (req, res) => {
