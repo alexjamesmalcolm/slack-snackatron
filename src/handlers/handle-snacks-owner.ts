@@ -5,10 +5,10 @@ import { Group } from "../types/group";
 import { getGroupId } from "./get-group-id";
 
 /**
- * @description If there is no Snackatron owner of this group then the caller of this command becomes that person. In the future can also be used to change ownership.
+ * @description Gets the owner of the Snackatron integration. If there is no Snackatron owner of this group then the caller of this command becomes that person. In the future can also be used to change ownership.
  */
 export const handleSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
-  async ({ ack, command, say, respond }) => {
+  async ({ ack, command, respond }) => {
     await ack();
     const groupId = getGroupId(command);
     const [mongo, close] = await connect();
@@ -31,7 +31,10 @@ export const handleSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
           },
         ],
       });
-      say(`<@${command.user_name}> created a snack group.`);
+      respond({
+        text: `<@${command.user_name}> created a snack group.`,
+        reply_broadcast: true,
+      });
     } else {
       if (command.text) {
         if (group.ownerUsername === command.user_name) {
