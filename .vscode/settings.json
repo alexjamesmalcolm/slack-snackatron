@@ -1,5 +1,7 @@
 {
-  "cSpell.words": [],
+  "cSpell.words": [
+    "snackatron"
+  ],
   "search.exclude": {
     "**/dist/**/*": true
   },
