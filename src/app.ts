@@ -35,9 +35,6 @@ app.command("/snacks-skip", handleSnacksSkip);
 // app.command("/snacks-people-per-day", handleSnacksPeoplePerDay);
 // app.command("/snacks-join", handleSnacksJoin);
 // app.command("/snacks-leave", handleSnacksLeave);
-/**
- * @description Returns the n number of people who are on snacks next.
- */
 app.command("/snacks-who", handleSnacksWho);
 app.command("/snacks-owner", handleSnacksOwner);
 

@@ -10,6 +10,7 @@ export interface SnackRotation {
   channelId: string;
   nextSnackDay: Temporal.PlainDate;
   dayOfTheWeek: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  peoplePerSnackDay: number;
   peopleOnSnacks: string[];
   peopleInGroup: PersonInGroup[];
 }

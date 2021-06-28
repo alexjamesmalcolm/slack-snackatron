@@ -26,6 +26,7 @@ export const handleSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
             channelId: command.channel_id,
             dayOfTheWeek: 1,
             nextSnackDay: getNextDayOfWeek(1),
+            peoplePerSnackDay: 3,
             peopleInGroup: [],
             peopleOnSnacks: [],
           },
