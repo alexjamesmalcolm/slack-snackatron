@@ -1,4 +1,5 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
+import { channelDoesNotHaveRotation, snackatronNotSetup } from "../messages";
 import { getGroup } from "../utils/get-group";
 
 /**
@@ -12,13 +13,13 @@ export const handleSnacksWho: Middleware<SlackCommandMiddlewareArgs> = async ({
   await ack();
   const group = await getGroup(command);
   if (!group) {
-    respond("Snackatron integration has not been setup yet");
+    respond(snackatronNotSetup);
   } else {
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
     );
     if (!snackRotation) {
-      respond(`There is no snack rotation in this channel.`);
+      respond(channelDoesNotHaveRotation);
     } else {
       respond({
         reply_broadcast: true,
