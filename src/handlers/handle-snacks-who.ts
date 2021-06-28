@@ -1,5 +1,5 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
-import { getGroup } from "./get-group";
+import { getGroup } from "../utils/get-group";
 
 /**
  * @description Returns the n number of people who are on snacks next.
