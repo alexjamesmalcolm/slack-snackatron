@@ -1,7 +1,7 @@
 import { App, ExpressReceiver } from "@slack/bolt";
-import { handleSnacksOwner } from "./handlers/handle-snacks-owner";
-import { handleSnacksSkip } from "./handlers/handle-snacks-skip";
-import { handleSnacksWho } from "./handlers/handle-snacks-who";
+import { handleSnacksOwner } from "./handlers/owner";
+import { handleSnacksSkip } from "./handlers/skip";
+import { handleSnacksWho } from "./handlers/who";
 
 const token = process.env.SLACK_TOKEN;
 const signingSecret = process.env.SLACK_SIGNING_SECRET;
