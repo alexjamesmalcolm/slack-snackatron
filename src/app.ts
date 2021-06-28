@@ -1,5 +1,6 @@
 import { App, ExpressReceiver } from "@slack/bolt";
 import { handleSnacksJoin } from "./handlers/join";
+import { handleSnacksLeave } from "./handlers/leave";
 import { handleSnacksOwner } from "./handlers/owner";
 import { handleSnacksSkip } from "./handlers/skip";
 import { handleSnacksWho } from "./handlers/who";
@@ -35,7 +36,7 @@ app.command("/snacks-skip", handleSnacksSkip);
 // app.command("/snacks-day", handleSnacksDay);
 // app.command("/snacks-people-per-day", handleSnacksPeoplePerDay);
 app.command("/snacks-join", handleSnacksJoin);
-// app.command("/snacks-leave", handleSnacksLeave);
+app.command("/snacks-leave", handleSnacksLeave);
 app.command("/snacks-who", handleSnacksWho);
 app.command("/snacks-owner", handleSnacksOwner);
 
