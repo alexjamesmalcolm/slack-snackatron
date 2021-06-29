@@ -10,11 +10,19 @@ export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareAr
     await ack();
     const groupId = getGroupId(context);
     const [mongo, close] = await connect();
+    const safeClose = async () => {
+      try {
+        return await close();
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    };
     const collectionOfGroups = mongo.collection<Group>("groups");
     const group = await collectionOfGroups.findOne({ groupId });
     if (!group) {
       respond(snackatronNotSetup);
-      return close();
+      return safeClose();
     }
     if (action.type !== "button") {
       throw new Error(
@@ -26,7 +34,7 @@ export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareAr
     );
     if (existingSnackRotation) {
       respond("There is already a snack rotation in this channel");
-      return close();
+      return safeClose();
     }
     const snackRotation: SnackRotation = {
       channelId: action.value,
@@ -38,5 +46,5 @@ export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareAr
     };
     group.snackRotations.push(snackRotation);
     await collectionOfGroups.updateOne({ groupId }, { $set: group });
-    return close();
+    return safeClose();
   };
