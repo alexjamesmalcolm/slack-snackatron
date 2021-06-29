@@ -23,7 +23,6 @@ interface ModalView {
   clear_on_close?: boolean; // defaults to false
   notify_on_close?: boolean; // defaults to false
   external_id?: string;
-  submit_disabled?: boolean; // defaults to false
 }
 
 export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
@@ -73,7 +72,6 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       title: { type: "plain_text", text: "Manage Rotation" },
       blocks: [responseBlock],
       type: "modal",
-      submit_disabled: true,
     };
     console.log("Managing Rotation");
     const result = await client.views
