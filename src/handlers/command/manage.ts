@@ -2,12 +2,29 @@ import {
   Middleware,
   SlackCommandMiddlewareArgs,
   SectionBlock,
+  PlainTextElement,
+  KnownBlock,
+  Block,
 } from "@slack/bolt";
 import { CREATE_SNACK_ROTATION } from "../../actionIds";
 import { snackatronNotSetup, channelDoesNotHaveRotation } from "../../messages";
 import { connect } from "../../mongodb";
 import { Group } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
+
+interface ModalView {
+  type: "modal";
+  title: PlainTextElement;
+  blocks: (KnownBlock | Block)[];
+  close?: PlainTextElement;
+  submit?: PlainTextElement;
+  private_metadata?: string;
+  callback_id?: string;
+  clear_on_close?: boolean; // defaults to false
+  notify_on_close?: boolean; // defaults to false
+  external_id?: string;
+  submit_disabled?: boolean; // defaults to false
+}
 
 export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
   async ({ ack, command, respond, body, client }) => {
@@ -32,16 +49,16 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
         type: "section",
         text: { type: "plain_text", text: channelDoesNotHaveRotation },
       };
+      const modalView: ModalView = {
+        type: "modal",
+        title: { type: "plain_text", text: "Create Rotation" },
+        blocks: [responseBlock],
+        submit: { type: "plain_text", text: "Create Rotation" },
+      };
       const result = await client.views
         .open({
           trigger_id: body.trigger_id,
-          view: {
-            type: "modal",
-            title: { type: "plain_text", text: "Create Rotation" },
-            blocks: [responseBlock],
-            submit: { type: "plain_text", text: "Create Rotation" },
-            submit_disabled: false,
-          },
+          view: modalView,
         })
         .catch(console.error);
       console.log(result);
@@ -51,16 +68,16 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       type: "section",
       text: { type: "plain_text", text: "Manage this thing!" },
     };
-
+    const modalView: ModalView = {
+      title: { type: "plain_text", text: "Manage Rotation" },
+      blocks: [responseBlock],
+      type: "modal",
+      submit_disabled: true,
+    };
     const result = await client.views
       .open({
         trigger_id: body.trigger_id,
-        view: {
-          type: "modal",
-          title: { type: "plain_text", text: "Manage Rotation" },
-          blocks: [responseBlock],
-          submit_disabled: true,
-        },
+        view: modalView,
       })
       .catch(console.error);
     console.log(result);
