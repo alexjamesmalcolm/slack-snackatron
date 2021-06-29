@@ -55,6 +55,7 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
         blocks: [responseBlock],
         submit: { type: "plain_text", text: "Create Rotation" },
       };
+      console.log("Querying to create rotation");
       const result = await client.views
         .open({
           trigger_id: body.trigger_id,
@@ -74,6 +75,7 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       type: "modal",
       submit_disabled: true,
     };
+    console.log("Managing Rotation");
     const result = await client.views
       .open({
         trigger_id: body.trigger_id,
