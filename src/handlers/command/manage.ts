@@ -32,15 +32,17 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
         type: "section",
         text: { type: "plain_text", text: channelDoesNotHaveRotation },
       };
-      const result = await client.views.open({
-        trigger_id: body.trigger_id,
-        view: {
-          type: "modal",
-          blocks: [responseBlock],
-          submit: { type: "plain_text", text: "Create Rotation" },
-          submit_disabled: false,
-        },
-      });
+      const result = await client.views
+        .open({
+          trigger_id: body.trigger_id,
+          view: {
+            type: "modal",
+            blocks: [responseBlock],
+            submit: { type: "plain_text", text: "Create Rotation" },
+            submit_disabled: false,
+          },
+        })
+        .catch(console.error);
       console.log(result);
       return close();
     }
@@ -48,13 +50,16 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       type: "section",
       text: { type: "plain_text", text: "Manage this thing!" },
     };
-    const result = await client.views.open({
-      trigger_id: body.trigger_id,
-      view: {
-        type: "modal",
-        blocks: [responseBlock],
-        submit_disabled: true,
-      },
-    });
+    const result = await client.views
+      .open({
+        trigger_id: body.trigger_id,
+        view: {
+          type: "modal",
+          blocks: [responseBlock],
+          submit_disabled: true,
+        },
+      })
+      .catch(console.error);
+    console.log(result);
     return close();
   };
