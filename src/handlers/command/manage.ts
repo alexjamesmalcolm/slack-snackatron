@@ -37,6 +37,7 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
           trigger_id: body.trigger_id,
           view: {
             type: "modal",
+            title: { type: "plain_text", text: "Create Rotation" },
             blocks: [responseBlock],
             submit: { type: "plain_text", text: "Create Rotation" },
             submit_disabled: false,
@@ -50,11 +51,13 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       type: "section",
       text: { type: "plain_text", text: "Manage this thing!" },
     };
+
     const result = await client.views
       .open({
         trigger_id: body.trigger_id,
         view: {
           type: "modal",
+          title: { type: "plain_text", text: "Manage Rotation" },
           blocks: [responseBlock],
           submit_disabled: true,
         },
