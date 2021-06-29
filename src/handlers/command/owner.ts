@@ -1,13 +1,13 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
-import { connect } from "../mongodb";
-import { getNextDayOfWeek } from "../types/day-of-the-week";
-import { Group } from "../types/group";
-import { getGroupId } from "../utils/get-group-id";
+import { connect } from "../../mongodb";
+import { getNextDayOfWeek } from "../../types/day-of-the-week";
+import { Group } from "../../types/group";
+import { getGroupId } from "../../utils/get-group-id";
 
 /**
  * @description Gets the owner of the Snackatron integration. If there is no Snackatron owner of this group then the caller of this command becomes that person. In the future can also be used to change ownership.
  */
-export const handleSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
+export const handleCommandSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
   async ({ ack, command, respond }) => {
     await ack();
     const groupId = getGroupId(command);

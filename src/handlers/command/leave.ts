@@ -1,10 +1,10 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
-import { channelDoesNotHaveRotation, snackatronNotSetup } from "../messages";
-import { connect } from "../mongodb";
-import { Group } from "../types/group";
-import { getGroupId } from "../utils/get-group-id";
+import { channelDoesNotHaveRotation, snackatronNotSetup } from "../../messages";
+import { connect } from "../../mongodb";
+import { Group } from "../../types/group";
+import { getGroupId } from "../../utils/get-group-id";
 
-export const handleSnacksLeave: Middleware<SlackCommandMiddlewareArgs> =
+export const handleCommandSnacksLeave: Middleware<SlackCommandMiddlewareArgs> =
   async ({ ack, command, respond }) => {
     await ack();
     const groupId = getGroupId(command);

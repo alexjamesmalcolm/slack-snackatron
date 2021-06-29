@@ -1,9 +1,12 @@
 import { App, ExpressReceiver } from "@slack/bolt";
-import { handleSnacksJoin } from "./handlers/join";
-import { handleSnacksLeave } from "./handlers/leave";
-import { handleSnacksOwner } from "./handlers/owner";
-import { handleSnacksSkip } from "./handlers/skip";
-import { handleSnacksWho } from "./handlers/who";
+import { CREATE_SNACK_ROTATION } from "./actionIds";
+import { handleActionCreateSnackRotation } from "./handlers/action/create-snack-rotation";
+import { handleCommandSnacksJoin } from "./handlers/command/join";
+import { handleCommandSnacksLeave } from "./handlers/command/leave";
+import { handleCommandSnacksManage } from "./handlers/command/manage";
+import { handleCommandSnacksOwner } from "./handlers/command/owner";
+import { handleCommandSnacksSkip } from "./handlers/command/skip";
+import { handleCommandSnacksWho } from "./handlers/command/who";
 
 const token = process.env.SLACK_TOKEN;
 const signingSecret = process.env.SLACK_SIGNING_SECRET;
@@ -32,13 +35,15 @@ app.message("hello", async ({ message, say }) => {
 /snacks-who - gets the list of people that are currently on snacks
 */
 
-app.command("/snacks-skip", handleSnacksSkip);
+app.command("/snacks-skip", handleCommandSnacksSkip);
 // app.command("/snacks-day", handleSnacksDay);
 // app.command("/snacks-people-per-day", handleSnacksPeoplePerDay);
-app.command("/snacks-join", handleSnacksJoin);
-app.command("/snacks-leave", handleSnacksLeave);
-app.command("/snacks-who", handleSnacksWho);
-app.command("/snacks-owner", handleSnacksOwner);
+app.command("/snacks-manage", handleCommandSnacksManage);
+app.command("/snacks-join", handleCommandSnacksJoin);
+app.command("/snacks-leave", handleCommandSnacksLeave);
+app.command("/snacks-who", handleCommandSnacksWho);
+app.command("/snacks-owner", handleCommandSnacksOwner);
+app.action(CREATE_SNACK_ROTATION, handleActionCreateSnackRotation);
 
 receiver.router.get("/", (req, res) => {
   res.send("Hello World!");
