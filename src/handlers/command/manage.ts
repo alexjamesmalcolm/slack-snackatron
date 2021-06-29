@@ -5,18 +5,24 @@ import {
 } from "@slack/bolt";
 import { CREATE_SNACK_ROTATION } from "../../actionIds";
 import { snackatronNotSetup, channelDoesNotHaveRotation } from "../../messages";
-import { getGroup } from "../../utils/get-group";
+import { connect } from "../../mongodb";
+import { Group } from "../../types/group";
+import { getGroupId } from "../../utils/get-group-id";
 
 export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
   async ({ ack, command, respond }) => {
-    const group = await getGroup(command);
+    await ack();
+    const groupId = getGroupId(command);
+    const [mongo, close] = await connect();
+    const collectionOfGroups = mongo.collection<Group>("groups");
+    const group = await collectionOfGroups.findOne({ groupId });
     if (!group) {
       const responseBlock: SectionBlock = {
         type: "section",
         text: { type: "plain_text", text: snackatronNotSetup },
       };
       respond({ blocks: [responseBlock] });
-      return;
+      return close();
     }
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
@@ -33,6 +39,7 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
         },
       };
       respond({ blocks: [responseBlock] });
-      return;
+      return close();
     }
+    return close();
   };
