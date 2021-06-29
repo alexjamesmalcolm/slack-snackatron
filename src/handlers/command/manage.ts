@@ -10,7 +10,7 @@ import { Group } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
-  async ({ ack, command, respond }) => {
+  async ({ ack, command, respond, body, client }) => {
     await ack();
     const groupId = getGroupId(command);
     const [mongo, close] = await connect();
@@ -31,15 +31,30 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       const responseBlock: SectionBlock = {
         type: "section",
         text: { type: "plain_text", text: channelDoesNotHaveRotation },
-        accessory: {
-          type: "button",
-          text: { type: "plain_text", text: "Create Rotation" },
-          action_id: CREATE_SNACK_ROTATION,
-          value: command.channel_id,
-        },
       };
-      respond({ blocks: [responseBlock] });
+      const result = await client.views.open({
+        trigger_id: body.trigger_id,
+        view: {
+          type: "modal",
+          blocks: [responseBlock],
+          submit: { type: "plain_text", text: "Create Rotation" },
+          submit_disabled: false,
+        },
+      });
+      console.log(result);
       return close();
     }
+    const responseBlock: SectionBlock = {
+      type: "section",
+      text: { type: "plain_text", text: "Manage this thing!" },
+    };
+    const result = await client.views.open({
+      trigger_id: body.trigger_id,
+      view: {
+        type: "modal",
+        blocks: [responseBlock],
+        submit_disabled: true,
+      },
+    });
     return close();
   };
