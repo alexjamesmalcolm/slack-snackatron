@@ -37,6 +37,6 @@ export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareAr
       peoplePerSnackDay: 3,
     };
     group.snackRotations.push(snackRotation);
-    await collectionOfGroups.updateOne({ groupId }, group);
+    await collectionOfGroups.updateOne({ groupId }, { $set: group });
     return close();
   };

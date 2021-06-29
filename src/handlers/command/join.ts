@@ -55,7 +55,7 @@ export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
         return snackRotation;
       }),
     };
-    await collectionOfGroups.updateOne({ groupId }, updatedGroup);
+    await collectionOfGroups.updateOne({ groupId }, { $set: updatedGroup });
     respond({
       text: `<@${command.user_name} joined the snack rotation.`,
       reply_broadcast: true,

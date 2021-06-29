@@ -46,7 +46,7 @@ export const handleCommandSnacksLeave: Middleware<SlackCommandMiddlewareArgs> =
         return snackRotation;
       }),
     };
-    await collectionOfGroups.updateOne({ groupId }, updatedGroup);
+    await collectionOfGroups.updateOne({ groupId }, { $set: updatedGroup });
     respond({
       text: `<@${command.user_name} left the snack rotation.`,
       reply_broadcast: true,

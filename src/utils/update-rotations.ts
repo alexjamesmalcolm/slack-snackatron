@@ -65,7 +65,7 @@ export const updateRotations = async (groupId?: string): Promise<void> => {
   for (const updatedGroup of updatedGroups) {
     await collectionOfGroups.updateOne(
       { groupId: updatedGroup.groupId },
-      updatedGroup
+      { $set: updatedGroup }
     );
   }
   await close();
