@@ -70,7 +70,7 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
         type: "mrkdwn",
         text: `ID: ${group.groupId}\nOwner: <@${
           group.ownerUserId
-        }>\nMembers: ${group.peopleInGroup
+        }>\nMembers:\n${group.peopleInGroup
           .map((personInGroup) => {
             if (personInGroup.spouseUserId)
               return `* <@${personInGroup.userId}>, who is married to <@${personInGroup.spouseUserId}>`;
