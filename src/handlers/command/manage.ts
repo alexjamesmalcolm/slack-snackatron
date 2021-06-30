@@ -68,6 +68,15 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       type: "section",
       text: { type: "plain_text", text: "Manage this thing!" },
     };
+    const usersOnSnacksBlock: SectionBlock = {
+      type: "section",
+      text: {
+        type: "plain_text",
+        text: snackRotation.idsOfPeopleOnSnacks
+          .map((id) => `<@${id}>`)
+          .join(", "),
+      },
+    };
     const modalView: ModalView = {
       title: { type: "plain_text", text: "Manage Rotation" },
       blocks: [responseBlock],

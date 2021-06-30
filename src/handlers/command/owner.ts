@@ -20,25 +20,28 @@ export const handleCommandSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
     if (!group) {
       await collectionOfGroups.insertOne({
         groupId,
-        ownerUsername: command.user_name,
+        ownerUserId: command.user_id,
+        peopleInGroup: [
+          { userId: command.user_id, userName: command.user_name },
+        ],
         snackRotations: [
           {
             channelId: command.channel_id,
             dayOfTheWeek: 1,
             nextSnackDay: getNextDayOfWeek(1),
             peoplePerSnackDay: 3,
-            peopleInGroup: [],
-            peopleOnSnacks: [],
+            idsOfPeopleOnSnacks: [],
+            peopleInRotation: [],
           },
         ],
       });
       respond({
-        text: `<@${command.user_name}> created a snack group.`,
+        text: `<@${command.user_id}> created a snack group.`,
         reply_broadcast: true,
       });
     } else {
       if (command.text) {
-        if (group.ownerUsername === command.user_name) {
+        if (group.ownerUserId === command.user_id) {
           respond("Changing owners is not yet implemented.");
         } else {
           respond(
@@ -47,7 +50,7 @@ export const handleCommandSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
         }
       } else {
         respond(
-          `<@${group.ownerUsername}> is the owner of the Snackatron integration.`
+          `<@${group.ownerUserId}> is the owner of the Snackatron integration.`
         );
       }
     }

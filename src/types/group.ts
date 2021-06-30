@@ -1,8 +1,15 @@
 import { Temporal } from "proposal-temporal";
 
-export interface PersonInGroup {
-  name: string;
-  spouse?: string;
+interface BasePerson {
+  userId: string;
+}
+
+export interface PersonInGroup extends BasePerson {
+  userName: string;
+  spouseUserId?: string;
+}
+
+export interface PersonInRotation extends BasePerson {
   lastTimeOnSnacks: Temporal.PlainDate;
 }
 
@@ -11,14 +18,15 @@ export interface SnackRotation {
   nextSnackDay: Temporal.PlainDate;
   dayOfTheWeek: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   peoplePerSnackDay: number;
-  peopleOnSnacks: string[];
-  peopleInGroup: PersonInGroup[];
+  idsOfPeopleOnSnacks: string[];
+  peopleInRotation: PersonInRotation[];
 }
 
 export interface Group {
   groupId: string;
-  ownerUsername: string;
+  ownerUserId: string;
   snackRotations: SnackRotation[];
+  peopleInGroup: PersonInGroup[];
 }
 
 const getNumberOfSpotsLeft = <T extends unknown>(
@@ -27,36 +35,48 @@ const getNumberOfSpotsLeft = <T extends unknown>(
 ): number => countOfSpots - list.length;
 
 export const findNextPeopleForSnacks = (
-  people: PersonInGroup[],
+  peopleInGroup: PersonInGroup[],
+  peopleInRotation: PersonInRotation[],
   countOfPeopleToFind: number
-): PersonInGroup[] => {
-  const internalPeople = [...people];
-  internalPeople.sort((a, b) =>
+): PersonInRotation[] => {
+  const internalPeopleInRotation = [...peopleInRotation];
+  internalPeopleInRotation.sort((a, b) =>
     Temporal.PlainDate.compare(a.lastTimeOnSnacks, b.lastTimeOnSnacks)
   );
-  return internalPeople.reduce(
-    (peopleOnSnacks: PersonInGroup[], person: PersonInGroup) => {
+  return internalPeopleInRotation.reduce(
+    (
+      peopleOnSnacks: PersonInRotation[],
+      personInRotation: PersonInRotation
+    ) => {
       const spotsLeft = getNumberOfSpotsLeft(
         peopleOnSnacks,
         countOfPeopleToFind
       );
       if (spotsLeft === 0) return peopleOnSnacks;
-      if (
-        peopleOnSnacks.some(
-          (personOnSnacks) => personOnSnacks.name === person.name
-        )
-      )
+      const isPersonAlreadyOnSnacks = peopleOnSnacks.some(
+        (personOnSnacks) => personOnSnacks.userId === personInRotation.userId
+      );
+      if (isPersonAlreadyOnSnacks) return peopleOnSnacks;
+      const getPersonInGroup = <T extends BasePerson>(
+        person: T
+      ): PersonInGroup | undefined =>
+        peopleInGroup.find(
+          (personInGroup) => personInGroup.userId === person.userId
+        );
+      const personInGroup = getPersonInGroup(personInRotation);
+      if (!personInGroup) {
+        console.log(`Nobody with userId: ${personInRotation.userId}`);
         return peopleOnSnacks;
-      const spouse: PersonInGroup | undefined = person.spouse
-        ? people.find((possibleSpouse) => possibleSpouse.name === person.spouse)
+      }
+      const spouse: PersonInRotation | undefined = personInGroup.spouseUserId
+        ? peopleInRotation.find(
+            (possibleSpouseInRotation) =>
+              possibleSpouseInRotation.userId === personInGroup.spouseUserId
+          )
         : undefined;
-      if (!spouse) {
-        return [...peopleOnSnacks, person];
-      }
-      if (spotsLeft <= 1) {
-        return peopleOnSnacks;
-      }
-      return [...peopleOnSnacks, person, spouse];
+      if (!spouse) return [...peopleOnSnacks, personInRotation];
+      if (spotsLeft <= 1) return peopleOnSnacks;
+      return [...peopleOnSnacks, personInRotation, spouse];
     },
     []
   );

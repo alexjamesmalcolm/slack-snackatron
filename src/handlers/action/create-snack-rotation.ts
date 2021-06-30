@@ -32,8 +32,8 @@ export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareAr
       channelId: action.value,
       dayOfTheWeek: 1,
       nextSnackDay: getNextDayOfWeek(1),
-      peopleInGroup: [],
-      peopleOnSnacks: [],
+      peopleInRotation: [],
+      idsOfPeopleOnSnacks: [],
       peoplePerSnackDay: 3,
     };
     group.snackRotations.push(snackRotation);

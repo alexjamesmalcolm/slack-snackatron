@@ -30,9 +30,9 @@ export const handleCommandSnacksWho: Middleware<SlackCommandMiddlewareArgs> =
     }
     respond({
       reply_broadcast: true,
-      text: `On ${snackRotation.nextSnackDay.toString()} ${snackRotation.peopleOnSnacks.join(
-        ", "
-      )} are providing food.`,
+      text: `On ${snackRotation.nextSnackDay.toString()} ${snackRotation.idsOfPeopleOnSnacks
+        .map((id) => `<@${id}>`)
+        .join(", ")} are providing food.`,
     });
     return close();
   };

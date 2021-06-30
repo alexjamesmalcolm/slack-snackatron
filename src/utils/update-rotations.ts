@@ -1,6 +1,11 @@
 import { Temporal } from "proposal-temporal";
 import { connect } from "../mongodb";
-import { Group, findNextPeopleForSnacks } from "../types/group";
+import {
+  Group,
+  findNextPeopleForSnacks,
+  SnackRotation,
+  PersonInRotation,
+} from "../types/group";
 import { getNextDayOfWeek } from "../types/day-of-the-week";
 
 export const internalUpdateRotations = (
@@ -16,26 +21,30 @@ export const internalUpdateRotations = (
     .map((group) => {
       return {
         ...group,
-        snackRotations: group.snackRotations.map((rotation) => {
+        snackRotations: group.snackRotations.map((rotation): SnackRotation => {
           const nextPeopleForSnacks = findNextPeopleForSnacks(
-            rotation.peopleInGroup,
+            group.peopleInGroup,
+            rotation.peopleInRotation,
             rotation.peoplePerSnackDay
           );
           const nextSnackDay = getNextDayOfWeek(rotation.dayOfTheWeek, today);
           return {
             ...rotation,
             nextSnackDay,
-            peopleOnSnacks: nextPeopleForSnacks.map((person) => person.name),
-            peopleInGroup: rotation.peopleInGroup.map((person) => {
-              if (
-                nextPeopleForSnacks.some(
-                  (nextPerson) => person.name === nextPerson.name
+            idsOfPeopleOnSnacks: nextPeopleForSnacks.map(
+              (person) => person.userId
+            ),
+            peopleInRotation: rotation.peopleInRotation.map(
+              (person): PersonInRotation => {
+                if (
+                  nextPeopleForSnacks.some(
+                    (nextPerson) => person.userId === nextPerson.userId
+                  )
                 )
-              ) {
-                return { ...person, lastTimeOnSnacks: nextSnackDay };
+                  return { ...person, lastTimeOnSnacks: nextSnackDay };
+                return person;
               }
-              return person;
-            }),
+            ),
           };
         }),
       };

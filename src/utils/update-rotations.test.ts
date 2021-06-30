@@ -22,29 +22,35 @@ describe("internalUpdateRotations", () => {
     });
     const group: Group = {
       groupId: "",
-      ownerUsername: "",
+      ownerUserId: "",
+      peopleInGroup: [
+        { userId: "a", userName: "a" },
+        { userId: "b", userName: "b" },
+        { userId: "c", userName: "c" },
+        { userId: "d", userName: "d" },
+      ],
       snackRotations: [
         {
           channelId: "",
           dayOfTheWeek: 1,
           nextSnackDay: lastSnackDay,
           peoplePerSnackDay: 2,
-          peopleInGroup: [
-            { name: "a", lastTimeOnSnacks: lastSnackDay },
-            { name: "b", lastTimeOnSnacks: lastSnackDay },
-            { name: "c", lastTimeOnSnacks: twoSnackDaysAgo },
-            { name: "d", lastTimeOnSnacks: twoSnackDaysAgo },
+          peopleInRotation: [
+            { userId: "a", lastTimeOnSnacks: lastSnackDay },
+            { userId: "b", lastTimeOnSnacks: lastSnackDay },
+            { userId: "c", lastTimeOnSnacks: twoSnackDaysAgo },
+            { userId: "d", lastTimeOnSnacks: twoSnackDaysAgo },
           ],
-          peopleOnSnacks: ["a", "b"],
+          idsOfPeopleOnSnacks: ["a", "b"],
         },
       ],
     };
     const updatedGroups = internalUpdateRotations([group], today);
     const snackRotation = updatedGroups[0].snackRotations[0];
     expect(snackRotation.nextSnackDay).toStrictEqual(nextSnackDay);
-    expect(snackRotation.peopleOnSnacks).toStrictEqual(["c", "d"]);
-    const findPerson = (name: string) =>
-      snackRotation.peopleInGroup.find((person) => person.name === name);
+    expect(snackRotation.idsOfPeopleOnSnacks).toStrictEqual(["c", "d"]);
+    const findPerson = (userId: string) =>
+      snackRotation.peopleInRotation.find((person) => person.userId === userId);
     expect(findPerson("a")?.lastTimeOnSnacks.toString()).toBe(
       lastSnackDay.toString()
     );
