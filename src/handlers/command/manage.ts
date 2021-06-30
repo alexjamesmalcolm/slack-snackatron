@@ -73,8 +73,8 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
         }>\nMembers:\n${group.peopleInGroup
           .map((personInGroup) => {
             if (personInGroup.spouseUserId)
-              return `* <@${personInGroup.userId}>, who is married to <@${personInGroup.spouseUserId}>`;
-            return `* <@${personInGroup.userId}>`;
+              return `- <@${personInGroup.userId}>, who is married to <@${personInGroup.spouseUserId}>`;
+            return `- <@${personInGroup.userId}>`;
           })
           .join("\n")}`,
       },
