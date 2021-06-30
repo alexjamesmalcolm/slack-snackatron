@@ -2,7 +2,7 @@ import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
 import { Temporal } from "proposal-temporal";
 import { channelDoesNotHaveRotation, snackatronNotSetup } from "../../messages";
 import { connect } from "../../mongodb";
-import { Group } from "../../types/group";
+import { Group, SnackRotation } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
@@ -23,11 +23,10 @@ export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
       respond(channelDoesNotHaveRotation);
       return close();
     }
-    if (
-      snackRotation.peopleInGroup.some(
-        (personInGroup) => personInGroup.name === command.user_name
-      )
-    ) {
+    const isAlreadyInRotation = snackRotation.peopleInRotation.some(
+      (personInRotation) => personInRotation.userId === command.user_id
+    );
+    if (isAlreadyInRotation) {
       respond(
         `<@${command.user_name}> is already a part of the snack rotation.`
       );
@@ -35,25 +34,34 @@ export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
     }
     const updatedGroup: Group = {
       ...group,
-      snackRotations: group.snackRotations.map((snackRotation) => {
-        if (snackRotation.channelId === command.channel_id) {
-          return {
-            ...snackRotation,
-            peopleInGroup: [
-              ...snackRotation.peopleInGroup,
-              {
-                name: command.user_name,
-                lastTimeOnSnacks: Temporal.PlainDate.from({
-                  year: 1,
-                  month: 1,
-                  day: 1,
-                }),
-              },
-            ],
-          };
+      peopleInGroup: [
+        ...group.peopleInGroup,
+        {
+          userId: command.user_id,
+          userName: command.user_name,
+        },
+      ],
+      snackRotations: group.snackRotations.map(
+        (snackRotation): SnackRotation => {
+          if (snackRotation.channelId === command.channel_id) {
+            return {
+              ...snackRotation,
+              peopleInRotation: [
+                ...snackRotation.peopleInRotation,
+                {
+                  userId: command.user_id,
+                  lastTimeOnSnacks: Temporal.PlainDate.from({
+                    year: 1,
+                    month: 1,
+                    day: 1,
+                  }),
+                },
+              ],
+            };
+          }
+          return snackRotation;
         }
-        return snackRotation;
-      }),
+      ),
     };
     await collectionOfGroups.updateOne({ groupId }, { $set: updatedGroup });
     respond({
