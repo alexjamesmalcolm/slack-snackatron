@@ -64,9 +64,20 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       console.log(result);
       return close();
     }
-    const responseBlock: SectionBlock = {
+    const groupInformationBlock: SectionBlock = {
       type: "section",
-      text: { type: "plain_text", text: "Manage this thing!" },
+      text: {
+        type: "mrkdwn",
+        text: `ID: ${group.groupId}\nOwner: <@${
+          group.ownerUserId
+        }>\nMembers: ${group.peopleInGroup
+          .map((personInGroup) => {
+            if (personInGroup.spouseUserId)
+              return `* <@${personInGroup.userId}>, who is married to <@${personInGroup.spouseUserId}>`;
+            return `* <@${personInGroup.userId}>`;
+          })
+          .join("\n")}`,
+      },
     };
     const usersOnSnacksBlock: SectionBlock = {
       type: "section",
@@ -78,8 +89,8 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       },
     };
     const modalView: ModalView = {
-      title: { type: "plain_text", text: "Manage Rotation" },
-      blocks: [responseBlock],
+      title: { type: "plain_text", text: "Snackatron" },
+      blocks: [groupInformationBlock, usersOnSnacksBlock],
       type: "modal",
     };
     console.log("Managing Rotation");
