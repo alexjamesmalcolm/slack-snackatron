@@ -8,7 +8,7 @@ import { getGroupId } from "../../utils/get-group-id";
  * @description Returns the n number of people who are on snacks next.
  */
 export const handleCommandSnacksWho: Middleware<SlackCommandMiddlewareArgs> =
-  async ({ ack, respond, command }) => {
+  async ({ ack, say, command }) => {
     await ack();
     const groupId = getGroupId(command);
     const [mongo, close] = await connect();
@@ -18,17 +18,17 @@ export const handleCommandSnacksWho: Middleware<SlackCommandMiddlewareArgs> =
       { timeout: true }
     );
     if (!group) {
-      respond(snackatronNotSetup);
+      say(snackatronNotSetup);
       return close();
     }
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
     );
     if (!snackRotation) {
-      respond(channelDoesNotHaveRotation);
+      say(channelDoesNotHaveRotation);
       return close();
     }
-    respond({
+    say({
       reply_broadcast: true,
       text: `On ${snackRotation.nextSnackDay.toString()} ${snackRotation.idsOfPeopleOnSnacks
         .map((id) => `<@${id}>`)

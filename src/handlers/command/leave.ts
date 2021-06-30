@@ -5,30 +5,28 @@ import { Group, SnackRotation } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 export const handleCommandSnacksLeave: Middleware<SlackCommandMiddlewareArgs> =
-  async ({ ack, command, respond }) => {
+  async ({ ack, command, say }) => {
     await ack();
     const groupId = getGroupId(command);
     const [mongo, close] = await connect();
     const collectionOfGroups = mongo.collection<Group>("groups");
     const group = await collectionOfGroups.findOne({ groupId });
     if (!group) {
-      respond(snackatronNotSetup);
+      say(snackatronNotSetup);
       return close();
     }
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
     );
     if (!snackRotation) {
-      respond(channelDoesNotHaveRotation);
+      say(channelDoesNotHaveRotation);
       return close();
     }
     const isPersonNotInRotation = snackRotation.peopleInRotation.every(
       (personInRotation) => personInRotation.userId !== command.user_id
     );
     if (isPersonNotInRotation) {
-      respond(
-        `<@${command.user_id}> is already not a part of the snack rotation.`
-      );
+      say(`<@${command.user_id}> is already not a part of the snack rotation.`);
       return close();
     }
     const updatedGroup: Group = {
@@ -49,7 +47,7 @@ export const handleCommandSnacksLeave: Middleware<SlackCommandMiddlewareArgs> =
       ),
     };
     await collectionOfGroups.updateOne({ groupId }, { $set: updatedGroup });
-    respond({
+    say({
       text: `<@${command.user_id}> left the snack rotation.`,
       reply_broadcast: true,
     });

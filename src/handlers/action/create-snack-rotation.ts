@@ -6,14 +6,14 @@ import { Group, SnackRotation } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareArgs> =
-  async ({ ack, action, respond, context }) => {
+  async ({ ack, action, say, context }) => {
     await ack();
     const groupId = getGroupId(context);
     const [mongo, close] = await connect();
     const collectionOfGroups = mongo.collection<Group>("groups");
     const group = await collectionOfGroups.findOne({ groupId });
     if (!group) {
-      respond(snackatronNotSetup);
+      say(snackatronNotSetup);
       return close();
     }
     if (action.type !== "button") {
@@ -25,7 +25,7 @@ export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareAr
       (snackRotation) => snackRotation.channelId === action.value
     );
     if (existingSnackRotation) {
-      respond("There is already a snack rotation in this channel");
+      say("There is already a snack rotation in this channel");
       return close();
     }
     const snackRotation: SnackRotation = {

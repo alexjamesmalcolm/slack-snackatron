@@ -26,7 +26,7 @@ interface ModalView {
 }
 
 export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
-  async ({ ack, command, respond, body, client }) => {
+  async ({ ack, command, say, body, client }) => {
     await ack();
     const groupId = getGroupId(command);
     const [mongo, close] = await connect();
@@ -37,7 +37,7 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
         type: "section",
         text: { type: "plain_text", text: snackatronNotSetup },
       };
-      respond({ blocks: [responseBlock] });
+      say({ blocks: [responseBlock] });
       return close();
     }
     const snackRotation = group.snackRotations.find(
