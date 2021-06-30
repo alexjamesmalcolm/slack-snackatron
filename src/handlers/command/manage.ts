@@ -83,9 +83,12 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       type: "section",
       text: {
         type: "plain_text",
-        text: snackRotation.idsOfPeopleOnSnacks
-          .map((id) => `<@${id}>`)
-          .join(", "),
+        text:
+          snackRotation.idsOfPeopleOnSnacks.length > 0
+            ? snackRotation.idsOfPeopleOnSnacks
+                .map((id) => `<@${id}>`)
+                .join(", ")
+            : "There is no one assigned to snacks.",
       },
     };
     const modalView: ModalView = {
