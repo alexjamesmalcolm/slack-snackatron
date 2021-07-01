@@ -43,27 +43,6 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
     );
-    if (!snackRotation) {
-      const responseBlock: SectionBlock = {
-        type: "section",
-        text: { type: "plain_text", text: channelDoesNotHaveRotation },
-      };
-      const modalView: ModalView = {
-        type: "modal",
-        title: { type: "plain_text", text: "Create Rotation" },
-        blocks: [responseBlock],
-        submit: { type: "plain_text", text: "Create Rotation" },
-      };
-      console.log("Querying to create rotation");
-      const result = await client.views
-        .open({
-          trigger_id: body.trigger_id,
-          view: modalView,
-        })
-        .catch(console.error);
-      console.log(result);
-      return close();
-    }
     const groupInformationBlock: SectionBlock = {
       type: "section",
       text: {
@@ -79,6 +58,27 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
           .join("\n")}`,
       },
     };
+    if (!snackRotation) {
+      const responseBlock: SectionBlock = {
+        type: "section",
+        text: { type: "plain_text", text: channelDoesNotHaveRotation },
+      };
+      const modalView: ModalView = {
+        type: "modal",
+        title: { type: "plain_text", text: "Create Rotation" },
+        blocks: [groupInformationBlock, responseBlock],
+        submit: { type: "plain_text", text: "Create Rotation" },
+      };
+      console.log("Querying to create rotation");
+      const result = await client.views
+        .open({
+          trigger_id: body.trigger_id,
+          view: modalView,
+        })
+        .catch(console.error);
+      console.log(result);
+      return close();
+    }
     const usersOnSnacksBlock: SectionBlock = {
       type: "section",
       text: {
