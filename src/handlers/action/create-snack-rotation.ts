@@ -2,7 +2,7 @@ import { Middleware, SlackActionMiddlewareArgs } from "@slack/bolt";
 import { snackatronNotSetup } from "../../messages";
 import { connect } from "../../mongodb";
 import { getNextDayOfWeek } from "../../types/day-of-the-week";
-import { Group, SnackRotation } from "../../types/group";
+import { Group, serializePlainDate, SnackRotation } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareArgs> =
@@ -31,7 +31,7 @@ export const handleActionCreateSnackRotation: Middleware<SlackActionMiddlewareAr
     const snackRotation: SnackRotation = {
       channelId: action.value,
       dayOfTheWeek: 1,
-      nextSnackDay: getNextDayOfWeek(1),
+      nextSnackDay: serializePlainDate(getNextDayOfWeek(1)),
       peopleInRotation: [],
       idsOfPeopleOnSnacks: [],
       peoplePerSnackDay: 3,

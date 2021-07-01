@@ -1,7 +1,7 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
 import { channelDoesNotHaveRotation, snackatronNotSetup } from "../../messages";
 import { connect } from "../../mongodb";
-import { Group } from "../../types/group";
+import { deserializePlainDate, Group } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 /**
@@ -30,7 +30,9 @@ export const handleCommandSnacksWho: Middleware<SlackCommandMiddlewareArgs> =
     }
     say({
       reply_broadcast: true,
-      text: `On ${snackRotation.nextSnackDay.toString()} ${snackRotation.idsOfPeopleOnSnacks
+      text: `On ${deserializePlainDate(
+        snackRotation.nextSnackDay
+      ).toString()} ${snackRotation.idsOfPeopleOnSnacks
         .map((id) => `<@${id}>`)
         .join(", ")} are providing food.`,
     });

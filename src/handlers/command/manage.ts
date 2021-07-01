@@ -58,6 +58,20 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
           .join("\n")}`,
       },
     };
+    const idBlock: SectionBlock = {
+      type: "section",
+      text: {
+        type: "plain_text",
+        text: `ID: ${group.groupId}`,
+      },
+    };
+    const ownerBlock: SectionBlock = {
+      type: "section",
+      text: {
+        type: "plain_text",
+        text: `Owner: <@${group.ownerUserId}>`,
+      },
+    };
     if (!snackRotation) {
       const responseBlock: SectionBlock = {
         type: "section",

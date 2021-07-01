@@ -5,6 +5,8 @@ import {
   findNextPeopleForSnacks,
   SnackRotation,
   PersonInRotation,
+  serializePlainDate,
+  deserializePlainDate,
 } from "../types/group";
 import { getNextDayOfWeek } from "../types/day-of-the-week";
 
@@ -15,7 +17,10 @@ export const internalUpdateRotations = (
   groups
     .filter((group) =>
       group.snackRotations.some((rotation) =>
-        Temporal.PlainDate.compare(rotation.nextSnackDay, today)
+        Temporal.PlainDate.compare(
+          deserializePlainDate(rotation.nextSnackDay),
+          today
+        )
       )
     )
     .map((group) => {
@@ -30,7 +35,7 @@ export const internalUpdateRotations = (
           const nextSnackDay = getNextDayOfWeek(rotation.dayOfTheWeek, today);
           return {
             ...rotation,
-            nextSnackDay,
+            nextSnackDay: serializePlainDate(nextSnackDay),
             idsOfPeopleOnSnacks: nextPeopleForSnacks.map(
               (person) => person.userId
             ),
@@ -41,7 +46,10 @@ export const internalUpdateRotations = (
                     (nextPerson) => person.userId === nextPerson.userId
                   )
                 )
-                  return { ...person, lastTimeOnSnacks: nextSnackDay };
+                  return {
+                    ...person,
+                    lastTimeOnSnacks: serializePlainDate(nextSnackDay),
+                  };
                 return person;
               }
             ),

@@ -2,7 +2,7 @@ import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
 import { Temporal } from "proposal-temporal";
 import { channelDoesNotHaveRotation, snackatronNotSetup } from "../../messages";
 import { connect } from "../../mongodb";
-import { Group, SnackRotation } from "../../types/group";
+import { Group, serializePlainDate, SnackRotation } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
@@ -54,11 +54,13 @@ export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
                 ...snackRotation.peopleInRotation,
                 {
                   userId: command.user_id,
-                  lastTimeOnSnacks: Temporal.PlainDate.from({
-                    year: 1,
-                    month: 1,
-                    day: 1,
-                  }),
+                  lastTimeOnSnacks: serializePlainDate(
+                    Temporal.PlainDate.from({
+                      year: 1,
+                      month: 1,
+                      day: 1,
+                    })
+                  ),
                 },
               ],
             };

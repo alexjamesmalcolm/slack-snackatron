@@ -1,5 +1,10 @@
 import { Temporal } from "proposal-temporal";
-import { Group, PersonInGroup } from "../types/group";
+import {
+  deserializePlainDate,
+  Group,
+  PersonInGroup,
+  serializePlainDate,
+} from "../types/group";
 import { internalUpdateRotations } from "./update-rotations";
 
 describe("internalUpdateRotations", () => {
@@ -33,13 +38,19 @@ describe("internalUpdateRotations", () => {
         {
           channelId: "",
           dayOfTheWeek: 1,
-          nextSnackDay: lastSnackDay,
+          nextSnackDay: serializePlainDate(lastSnackDay),
           peoplePerSnackDay: 2,
           peopleInRotation: [
-            { userId: "a", lastTimeOnSnacks: lastSnackDay },
-            { userId: "b", lastTimeOnSnacks: lastSnackDay },
-            { userId: "c", lastTimeOnSnacks: twoSnackDaysAgo },
-            { userId: "d", lastTimeOnSnacks: twoSnackDaysAgo },
+            { userId: "a", lastTimeOnSnacks: serializePlainDate(lastSnackDay) },
+            { userId: "b", lastTimeOnSnacks: serializePlainDate(lastSnackDay) },
+            {
+              userId: "c",
+              lastTimeOnSnacks: serializePlainDate(twoSnackDaysAgo),
+            },
+            {
+              userId: "d",
+              lastTimeOnSnacks: serializePlainDate(twoSnackDaysAgo),
+            },
           ],
           idsOfPeopleOnSnacks: ["a", "b"],
         },
@@ -47,21 +58,23 @@ describe("internalUpdateRotations", () => {
     };
     const updatedGroups = internalUpdateRotations([group], today);
     const snackRotation = updatedGroups[0].snackRotations[0];
-    expect(snackRotation.nextSnackDay).toStrictEqual(nextSnackDay);
+    expect(snackRotation.nextSnackDay).toStrictEqual(
+      serializePlainDate(nextSnackDay)
+    );
     expect(snackRotation.idsOfPeopleOnSnacks).toStrictEqual(["c", "d"]);
     const findPerson = (userId: string) =>
       snackRotation.peopleInRotation.find((person) => person.userId === userId);
-    expect(findPerson("a")?.lastTimeOnSnacks.toString()).toBe(
-      lastSnackDay.toString()
+    expect(findPerson("a")?.lastTimeOnSnacks).toStrictEqual(
+      serializePlainDate(lastSnackDay)
     );
-    expect(findPerson("b")?.lastTimeOnSnacks.toString()).toBe(
-      lastSnackDay.toString()
+    expect(findPerson("b")?.lastTimeOnSnacks).toStrictEqual(
+      serializePlainDate(lastSnackDay)
     );
-    expect(findPerson("c")?.lastTimeOnSnacks.toString()).toBe(
-      nextSnackDay.toString()
+    expect(findPerson("c")?.lastTimeOnSnacks).toStrictEqual(
+      serializePlainDate(nextSnackDay)
     );
-    expect(findPerson("d")?.lastTimeOnSnacks.toString()).toBe(
-      nextSnackDay.toString()
+    expect(findPerson("d")?.lastTimeOnSnacks).toStrictEqual(
+      serializePlainDate(nextSnackDay)
     );
   });
 });

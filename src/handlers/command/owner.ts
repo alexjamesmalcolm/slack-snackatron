@@ -1,7 +1,7 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
 import { connect } from "../../mongodb";
 import { getNextDayOfWeek } from "../../types/day-of-the-week";
-import { Group } from "../../types/group";
+import { Group, serializePlainDate } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 /**
@@ -28,7 +28,7 @@ export const handleCommandSnacksOwner: Middleware<SlackCommandMiddlewareArgs> =
           {
             channelId: command.channel_id,
             dayOfTheWeek: 1,
-            nextSnackDay: getNextDayOfWeek(1),
+            nextSnackDay: serializePlainDate(getNextDayOfWeek(1)),
             peoplePerSnackDay: 3,
             idsOfPeopleOnSnacks: [],
             peopleInRotation: [],

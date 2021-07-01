@@ -4,18 +4,42 @@ interface BasePerson {
   userId: string;
 }
 
+interface SerializedPlainDate {
+  yn: number;
+  mn: number;
+  dn: number;
+}
+
+export const serializePlainDate = (
+  plainDate: Temporal.PlainDate
+): SerializedPlainDate => ({
+  yn: plainDate.year,
+  mn: plainDate.month,
+  dn: plainDate.day,
+});
+
+export const deserializePlainDate = (
+  serializedPlainDate: SerializedPlainDate
+): Temporal.PlainDate => {
+  return Temporal.PlainDate.from({
+    year: serializedPlainDate.yn,
+    month: serializedPlainDate.mn,
+    day: serializedPlainDate.dn,
+  });
+};
+
 export interface PersonInGroup extends BasePerson {
   userName: string;
   spouseUserId?: string;
 }
 
 export interface PersonInRotation extends BasePerson {
-  lastTimeOnSnacks: Temporal.PlainDate;
+  lastTimeOnSnacks: SerializedPlainDate;
 }
 
 export interface SnackRotation {
   channelId: string;
-  nextSnackDay: Temporal.PlainDate;
+  nextSnackDay: SerializedPlainDate;
   dayOfTheWeek: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   peoplePerSnackDay: number;
   idsOfPeopleOnSnacks: string[];
@@ -41,7 +65,10 @@ export const findNextPeopleForSnacks = (
 ): PersonInRotation[] => {
   const internalPeopleInRotation = [...peopleInRotation];
   internalPeopleInRotation.sort((a, b) =>
-    Temporal.PlainDate.compare(a.lastTimeOnSnacks, b.lastTimeOnSnacks)
+    Temporal.PlainDate.compare(
+      deserializePlainDate(a.lastTimeOnSnacks),
+      deserializePlainDate(b.lastTimeOnSnacks)
+    )
   );
   return internalPeopleInRotation.reduce(
     (
