@@ -27,7 +27,7 @@ export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
       (personInRotation) => personInRotation.userId === command.user_id
     );
     if (isAlreadyInRotation) {
-      say(`<@${command.user_name}> is already a part of the snack rotation.`);
+      say(`<@${command.user_id}> is already a part of the snack rotation.`);
       return close();
     }
     const updatedGroup: Group = {
@@ -63,7 +63,7 @@ export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
     };
     await collectionOfGroups.updateOne({ groupId }, { $set: updatedGroup });
     say({
-      text: `<@${command.user_name} joined the snack rotation.`,
+      text: `<@${command.user_id}> joined the snack rotation.`,
       reply_broadcast: true,
     });
     return close();
