@@ -43,13 +43,11 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
     );
-    const groupInformationBlock: SectionBlock = {
+    const peopleInGroupBlock: SectionBlock = {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `ID: ${group.groupId}\nOwner: <@${
-          group.ownerUserId
-        }>\nMembers:\n${group.peopleInGroup
+        text: `Members:\n${group.peopleInGroup
           .map((personInGroup) => {
             if (personInGroup.spouseUserId)
               return `- <@${personInGroup.userId}>, who is married to <@${personInGroup.spouseUserId}>`;
@@ -80,7 +78,7 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
       const modalView: ModalView = {
         type: "modal",
         title: { type: "plain_text", text: "Create Rotation" },
-        blocks: [groupInformationBlock, responseBlock],
+        blocks: [idBlock, ownerBlock, peopleInGroupBlock, responseBlock],
         submit: { type: "plain_text", text: "Create Rotation" },
       };
       console.log("Querying to create rotation");
@@ -116,7 +114,13 @@ export const handleCommandSnacksManage: Middleware<SlackCommandMiddlewareArgs> =
     };
     const modalView: ModalView = {
       title: { type: "plain_text", text: "Snackatron" },
-      blocks: [groupInformationBlock, usersInRotationBlock, usersOnSnacksBlock],
+      blocks: [
+        idBlock,
+        ownerBlock,
+        peopleInGroupBlock,
+        usersInRotationBlock,
+        usersOnSnacksBlock,
+      ],
       type: "modal",
     };
     console.log("Managing Rotation");
