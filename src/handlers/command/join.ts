@@ -30,15 +30,21 @@ export const handleCommandSnacksJoin: Middleware<SlackCommandMiddlewareArgs> =
       say(`<@${command.user_id}> is already a part of the snack rotation.`);
       return close();
     }
+    const isAlreadyInGroup = group.peopleInGroup.some(
+      (personInGroup) => personInGroup.userId === command.user_id
+    );
+    const updatedPeopleInGroup = isAlreadyInGroup
+      ? group.peopleInGroup
+      : [
+          ...group.peopleInGroup,
+          {
+            userId: command.user_id,
+            userName: command.user_name,
+          },
+        ];
     const updatedGroup: Group = {
       ...group,
-      peopleInGroup: [
-        ...group.peopleInGroup,
-        {
-          userId: command.user_id,
-          userName: command.user_name,
-        },
-      ],
+      peopleInGroup: updatedPeopleInGroup,
       snackRotations: group.snackRotations.map(
         (snackRotation): SnackRotation => {
           if (snackRotation.channelId === command.channel_id) {
