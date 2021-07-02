@@ -32,6 +32,13 @@ export const handleCommandSnacksSkip: Middleware<SlackCommandMiddlewareArgs> =
       say(channelDoesNotHaveRotation);
       return close();
     }
+    const isOwnerOfGroup = group.ownerUserId === command.user_id;
+    if (!isOwnerOfGroup) {
+      say({
+        reply_broadcast: false,
+        text: `<@${command.user_id}> is not the owner of the Snackatron integration.`,
+      });
+    }
     const updatedSnackDate = serializePlainDate(
       getNextDayOfWeek(
         snackRotation.dayOfTheWeek,
