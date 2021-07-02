@@ -3,6 +3,7 @@ import { channelDoesNotHaveRotation, snackatronNotSetup } from "../../messages";
 import { connect } from "../../mongodb";
 import { deserializePlainDate, Group } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
+import { updateRotations } from "../../utils/update-rotations";
 
 /**
  * @description Returns the n number of people who are on snacks next.
@@ -11,6 +12,7 @@ export const handleCommandSnacksWho: Middleware<SlackCommandMiddlewareArgs> =
   async ({ ack, say, command }) => {
     await ack();
     const groupId = getGroupId(command);
+    await updateRotations(groupId);
     const [mongo, close] = await connect();
     const collectionOfGroups = mongo.collection<Group>("groups");
     const group = await collectionOfGroups.findOne(
