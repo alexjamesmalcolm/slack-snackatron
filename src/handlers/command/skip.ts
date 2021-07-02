@@ -22,14 +22,14 @@ export const handleCommandSnacksSkip: Middleware<SlackCommandMiddlewareArgs> =
       { timeout: true }
     );
     if (!group) {
-      await say(snackatronNotSetup);
+      await say({ text: snackatronNotSetup, reply_broadcast: false });
       return close();
     }
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
     );
     if (!snackRotation) {
-      await say(channelDoesNotHaveRotation);
+      await say({ text: channelDoesNotHaveRotation, reply_broadcast: false });
       return close();
     }
     const isOwnerOfGroup = group.ownerUserId === command.user_id;
