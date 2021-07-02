@@ -22,22 +22,23 @@ export const handleCommandSnacksSkip: Middleware<SlackCommandMiddlewareArgs> =
       { timeout: true }
     );
     if (!group) {
-      say(snackatronNotSetup);
+      await say(snackatronNotSetup);
       return close();
     }
     const snackRotation = group.snackRotations.find(
       (snackRotation) => snackRotation.channelId === command.channel_id
     );
     if (!snackRotation) {
-      say(channelDoesNotHaveRotation);
+      await say(channelDoesNotHaveRotation);
       return close();
     }
     const isOwnerOfGroup = group.ownerUserId === command.user_id;
     if (!isOwnerOfGroup) {
-      say({
+      await say({
         reply_broadcast: false,
         text: `<@${command.user_id}> is not the owner of the Snackatron integration.`,
       });
+      return close();
     }
     const updatedSnackDate = serializePlainDate(
       getNextDayOfWeek(
@@ -81,5 +82,11 @@ export const handleCommandSnacksSkip: Middleware<SlackCommandMiddlewareArgs> =
         },
       }
     );
+    await say({
+      reply_broadcast: true,
+      text: `Next snack day moved to ${deserializePlainDate(
+        updatedSnackRotation.nextSnackDay
+      ).toLocaleString()}`,
+    });
     return close();
   };
