@@ -34,7 +34,7 @@ export const handleCommandSnacksWho: Middleware<SlackCommandMiddlewareArgs> =
       reply_broadcast: true,
       text: `On ${deserializePlainDate(
         snackRotation.nextSnackDay
-      ).toString()} ${snackRotation.idsOfPeopleOnSnacks
+      ).toLocaleString()} ${snackRotation.idsOfPeopleOnSnacks
         .map((id) => `<@${id}>`)
         .join(", ")} are providing food.`,
     });
