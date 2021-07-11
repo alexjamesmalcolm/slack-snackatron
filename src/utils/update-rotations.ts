@@ -16,11 +16,12 @@ export const internalUpdateRotations = (
 ): Group[] =>
   groups
     .filter((group) =>
-      group.snackRotations.some((rotation) =>
-        Temporal.PlainDate.compare(
-          deserializePlainDate(rotation.nextSnackDay),
-          today
-        )
+      group.snackRotations.some(
+        (rotation) =>
+          Temporal.PlainDate.compare(
+            deserializePlainDate(rotation.nextSnackDay),
+            today
+          ) < 0
       )
     )
     .map((group) => {
