@@ -41,7 +41,7 @@ const exampleGroup: Group = {
         dn: 12,
       },
       peoplePerSnackDay: 3,
-      idsOfPeopleOnSnacks: ["U01FASLSP2T", "U01JKDM1W8L", "U01JC8RDYDR"],
+      idsOfPeopleOnSnacks: ["U01K1TT33T2", "U01F1NR0WSX", "U01F1RHG10D"],
       peopleInRotation: [
         {
           userId: "U01K1TT33T2",
