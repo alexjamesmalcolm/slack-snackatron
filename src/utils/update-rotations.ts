@@ -8,7 +8,7 @@ import {
   serializePlainDate,
   deserializePlainDate,
 } from "../types/group";
-import { getNextDayOfWeek } from "../types/day-of-the-week";
+import { getNextDayOfWeekIncludingToday } from "../types/day-of-the-week";
 
 export const internalUpdateRotations = (
   groups: Group[],
@@ -33,7 +33,10 @@ export const internalUpdateRotations = (
             rotation.peopleInRotation,
             rotation.peoplePerSnackDay
           );
-          const nextSnackDay = getNextDayOfWeek(rotation.dayOfTheWeek, today);
+          const nextSnackDay = getNextDayOfWeekIncludingToday(
+            rotation.dayOfTheWeek,
+            today
+          );
           return {
             ...rotation,
             nextSnackDay: serializePlainDate(nextSnackDay),

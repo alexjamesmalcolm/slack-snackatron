@@ -268,4 +268,12 @@ describe("internalUpdateRotations", () => {
     );
     expect(result.length).toBe(1);
   });
+  it("should update group if the snack day is today but the next snack date should be the same day", () => {
+    const today = Temporal.PlainDate.from({ year: 2021, month: 7, day: 19 });
+    const result = internalUpdateRotations([exampleGroup], today);
+    expect(result.length).toBe(1);
+    expect(result[0].snackRotations[0].nextSnackDay).toStrictEqual(
+      serializePlainDate(today)
+    );
+  });
 });
