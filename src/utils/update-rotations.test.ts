@@ -272,7 +272,7 @@ describe("internalUpdateRotations", () => {
     const today = Temporal.PlainDate.from({ year: 2021, month: 7, day: 19 });
     const result = internalUpdateRotations([exampleGroup], today);
     expect(result.length).toBe(1);
-    expect(result[0].snackRotations[0].nextSnackDay).toBe(
+    expect(result[0].snackRotations[0].nextSnackDay).toStrictEqual(
       serializePlainDate(today)
     );
   });
