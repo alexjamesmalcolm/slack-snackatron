@@ -1,6 +1,6 @@
 import { Temporal } from "proposal-temporal";
 
-type DayOfTheWeek =
+export type DayOfTheWeek =
   | "MONDAY"
   | "TUESDAY"
   | "WEDNESDAY"
@@ -64,6 +64,15 @@ export function convertDayOfTheWeek(
   }
 }
 
+const getNextDayOfWeekStartingWithTomorrow = (
+  dayOfWeek: number,
+  today = Temporal.now.plainDateISO()
+): Temporal.PlainDate => {
+  const tomorrow = today.add({ days: 1 });
+  if (tomorrow.dayOfWeek === dayOfWeek) return tomorrow;
+  return getNextDayOfWeekStartingWithTomorrow(dayOfWeek, tomorrow);
+};
+
 export const getNextDayOfWeek = (
   input: number | DayOfTheWeek,
   today = Temporal.now.plainDateISO()
@@ -73,5 +82,16 @@ export const getNextDayOfWeek = (
     : input;
   const tomorrow = today.add({ days: 1 });
   if (tomorrow.dayOfWeek === dayOfTheWeek) return tomorrow;
-  return getNextDayOfWeek(dayOfTheWeek, tomorrow);
+  return getNextDayOfWeekStartingWithTomorrow(dayOfTheWeek, tomorrow);
+};
+
+export const getNextDayOfWeekIncludingToday = (
+  input: number | DayOfTheWeek,
+  today = Temporal.now.plainDateISO()
+): Temporal.PlainDate => {
+  const dayOfTheWeek = isNamedDayOfTheWeek(input)
+    ? convertDayOfTheWeek(input)
+    : input;
+  if (today.dayOfWeek === dayOfTheWeek) return today;
+  return getNextDayOfWeekStartingWithTomorrow(dayOfTheWeek, today);
 };
