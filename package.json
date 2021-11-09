@@ -33,7 +33,7 @@
         "tslint": "^5.12.1"
     },
     "dependencies": {
-        "@slack/bolt": "^3.7.0",
+        "@slack/bolt": "^3.8.1",
         "@types/mongodb": "^3.6.20",
         "@types/node-fetch": "^2.5.12",
         "@types/uuid": "^8.3.1",
