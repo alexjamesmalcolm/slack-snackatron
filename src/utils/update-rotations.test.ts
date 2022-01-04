@@ -226,7 +226,9 @@ describe("internalUpdateRotations", () => {
       ],
     };
     const updatedGroups = internalUpdateRotations([group], today);
+    if (!updatedGroups[0]) throw new Error("No group updated");
     const snackRotation = updatedGroups[0].snackRotations[0];
+    if (!snackRotation) throw new Error("No snack rotation updated");
     expect(snackRotation.nextSnackDay).toStrictEqual(
       serializePlainDate(nextSnackDay)
     );
@@ -271,7 +273,11 @@ describe("internalUpdateRotations", () => {
   it("should update group if the snack day is today but the next snack date should be the same day", () => {
     const today = Temporal.PlainDate.from({ year: 2021, month: 7, day: 19 });
     const result = internalUpdateRotations([exampleGroup], today);
-    expect(result.length).toBe(1);
+    if (!result[0]) throw new Error("Should have at least updated 1 group");
+    if (!result[0].snackRotations[0])
+      throw new Error(
+        "Updated group should have at least 1 updated snack rotation"
+      );
     expect(result[0].snackRotations[0].nextSnackDay).toStrictEqual(
       serializePlainDate(today)
     );

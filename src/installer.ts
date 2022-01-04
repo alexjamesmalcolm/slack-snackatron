@@ -54,6 +54,8 @@ export const installer = new InstallProvider({
         installQuery.enterpriseId !== undefined
           ? installQuery.enterpriseId
           : installQuery.teamId;
+      if (!id)
+        throw new Error(`Unable to find installation id from install query`);
       const installation = (await collectionOfInstallations.findOne({ id }))
         ?.installation;
       close();
