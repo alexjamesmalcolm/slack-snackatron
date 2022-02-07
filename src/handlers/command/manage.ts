@@ -29,6 +29,7 @@ export const handleCommandSnacksManage: Middleware<
   const snackRotation = group.snackRotations.find(
     (snackRotation) => snackRotation.channelId === command.channel_id
   );
+  console.log({ channelId: command.channel_id });
   const peopleInGroupBlock: SectionBlock = {
     type: "section",
     text: {
