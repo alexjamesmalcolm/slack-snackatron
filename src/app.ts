@@ -43,7 +43,7 @@ app.command("/snacks-join", handleCommandSnacksJoin);
 app.command("/snacks-leave", handleCommandSnacksLeave);
 app.command("/snacks-who", handleCommandSnacksWho);
 app.command("/snacks-owner", handleCommandSnacksOwner);
-app.action(CREATE_SNACK_ROTATION, handleActionCreateSnackRotation);
+app.view(CREATE_SNACK_ROTATION, handleActionCreateSnackRotation);
 
 receiver.router.get("/", (_req, res) => {
   res.send("Hello World!");

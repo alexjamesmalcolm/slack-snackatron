@@ -2,28 +2,13 @@ import {
   Middleware,
   SlackCommandMiddlewareArgs,
   SectionBlock,
-  PlainTextElement,
-  KnownBlock,
-  Block,
+  View,
 } from "@slack/bolt";
-// import { CREATE_SNACK_ROTATION } from "../../actionIds";
+import { CREATE_SNACK_ROTATION } from "../../actionIds";
 import { snackatronNotSetup, channelDoesNotHaveRotation } from "../../messages";
 import { connect } from "../../mongodb";
 import { Group } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
-
-interface ModalView {
-  type: "modal";
-  title: PlainTextElement;
-  blocks: (KnownBlock | Block)[];
-  close?: PlainTextElement;
-  submit?: PlainTextElement;
-  private_metadata?: string;
-  callback_id?: string;
-  clear_on_close?: boolean; // defaults to false
-  notify_on_close?: boolean; // defaults to false
-  external_id?: string;
-}
 
 export const handleCommandSnacksManage: Middleware<
   SlackCommandMiddlewareArgs
@@ -76,11 +61,12 @@ export const handleCommandSnacksManage: Middleware<
       type: "section",
       text: { type: "plain_text", text: channelDoesNotHaveRotation },
     };
-    const modalView: ModalView = {
+    const modalView: View = {
       type: "modal",
       title: { type: "plain_text", text: "Create Rotation" },
       blocks: [idBlock, ownerBlock, peopleInGroupBlock, responseBlock],
       submit: { type: "plain_text", text: "Create Rotation" },
+      callback_id: CREATE_SNACK_ROTATION,
     };
     console.log("Querying to create rotation");
     const result = await client.views
@@ -111,7 +97,7 @@ export const handleCommandSnacksManage: Middleware<
           : "There is no one assigned to snacks.",
     },
   };
-  const modalView: ModalView = {
+  const modalView: View = {
     title: { type: "plain_text", text: "Snackatron" },
     blocks: [
       idBlock,
