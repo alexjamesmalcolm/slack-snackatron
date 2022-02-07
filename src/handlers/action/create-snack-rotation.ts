@@ -5,8 +5,7 @@ import {
 } from "@slack/bolt";
 import { snackatronNotSetup } from "../../messages";
 import { connect } from "../../mongodb";
-import { getNextDayOfWeek } from "../../types/day-of-the-week";
-import { Group, serializePlainDate, SnackRotation } from "../../types/group";
+import { Group } from "../../types/group";
 import { getGroupId } from "../../utils/get-group-id";
 
 export const handleActionCreateSnackRotation: Middleware<
